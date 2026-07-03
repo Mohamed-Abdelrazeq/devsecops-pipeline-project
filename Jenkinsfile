@@ -52,28 +52,16 @@ pipeline {
             }
         }
 
-            stage('SonarQube - SAST') {
-                steps {
-                    sh 'mvn clean package -DskipTests=true'
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                    sh """
-                    mvn sonar:sonar \
-                        -Dsonar.projectKey=numeric \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    """
-                }
-            }
-
-        stage('SonarQube Analysis') {
+        stage('SonarQube - SAST') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=numeric \
-                        -Dsonar.projectName=numeric
-                    '''
-                }
+                sh 'mvn clean package -DskipTests=true'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                sh """
+                mvn sonar:sonar \
+                    -Dsonar.projectKey=numeric \
+                    -Dsonar.host.url=http://sonarqube:9000 \
+                    -Dsonar.login=${SONAR_TOKEN}
+                """
             }
         }
 
