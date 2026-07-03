@@ -48,6 +48,26 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        mvn clean verify sonar:sonar \
+                        -Dsonar.projectKey=numeric \
+                        -Dsonar.projectName=numeric
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
