@@ -1,3 +1,4 @@
 .env
 infra/jenkins_data/
+infra/sonarqube*
 target/
