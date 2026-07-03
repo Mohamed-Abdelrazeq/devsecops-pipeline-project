@@ -2,4 +2,4 @@ fileignoreconfig:
 - filename: README.md
   checksum: c201e12b7fc9e8305df139e2569c2d77e56107a80798420873c8c3b0b90c5899
 - filename: Jenkinsfile
-  checksum: 6c0b4bad977ee5aca8571305dbee74b6e70e80dd5385d76d52661f9c801bd36d
+  checksum: af5bbdbda967beccf77f5c1dd33953bc3842a673ac66a62ed16bdd82443cb918

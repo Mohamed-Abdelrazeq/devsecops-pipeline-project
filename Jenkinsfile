@@ -52,26 +52,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube - SAST') {
-            steps {
-                sh 'mvn clean package -DskipTests=true'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                sh """
-                mvn sonar:sonar \
-                    -Dsonar.projectKey=numeric \
-                    -Dsonar.host.url=http://sonarqube:9000 \
-                    -Dsonar.login=${SONAR_TOKEN}
-                """
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
 
         stage('Package') {
             steps {
@@ -81,6 +61,27 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        stage('SonarQube - SAST') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=numeric \
+                        -Dsonar.host.url=http://sonarqube:9000 \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
