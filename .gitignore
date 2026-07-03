@@ -2,3 +2,4 @@
 infra/jenkins_data/
 infra/sonarqube*
 target/
+infra/.DS_Store

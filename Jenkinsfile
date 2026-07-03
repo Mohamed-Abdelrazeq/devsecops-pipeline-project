@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')
+    }
+
     tools {
         maven '3.9.16'
     }
@@ -47,6 +51,19 @@ pipeline {
                 }
             }
         }
+
+            stage('SonarQube - SAST') {
+                steps {
+                    sh 'mvn clean package -DskipTests=true'
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                    sh """
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=numeric-application \
+                        -Dsonar.host.url=http://devsecops-demo.eastus.cloudapp.azure.com:9000 \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
+            }
 
         stage('SonarQube Analysis') {
             steps {
