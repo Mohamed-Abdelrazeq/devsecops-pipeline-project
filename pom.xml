@@ -54,7 +54,7 @@
 
 	<build>
 		<plugins>
-			<!-- SPRING BOOT -->
+			<!-- Spring Boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -78,6 +78,30 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- Pit Mutation -->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.17.4</version>
+
+				<configuration>
+					<mutationThreshold>70</mutationThreshold>
+					<targetClasses>
+						<param>com.devsecops.*</param>
+					</targetClasses>
+
+					<targetTests>
+						<param>com.devsecops.*</param>
+					</targetTests>
+
+					<outputFormats>
+						<param>HTML</param>
+						<param>XML</param>
+					</outputFormats>
+
+					<timestampedReports>false</timestampedReports>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

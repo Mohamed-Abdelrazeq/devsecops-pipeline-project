@@ -36,6 +36,18 @@ pipeline {
             }
         }
 
+        stage('Mutation Testing (PIT)') {
+            steps {
+                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
+            }
+
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
