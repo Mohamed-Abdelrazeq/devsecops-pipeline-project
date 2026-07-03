@@ -43,7 +43,14 @@ pipeline {
 
             post {
                 always {
-                    archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
+                      publishHTML([
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/pit-reports',
+                        reportFiles: 'index.html',
+                        reportName: 'PIT Mutation Report'
+                    ])
                 }
             }
         }
