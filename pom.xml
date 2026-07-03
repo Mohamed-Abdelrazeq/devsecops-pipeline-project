@@ -103,7 +103,7 @@
 					<timestampedReports>false</timestampedReports>
 				</configuration>
 			</plugin>
-			<!-- Dependency Checker ( OWASP ) -->
+			<!-- Dependency Checker ( OWASP - SCA ) -->
 			 <plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
