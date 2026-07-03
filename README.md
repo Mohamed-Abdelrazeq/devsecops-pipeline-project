@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-This project is a hands-on **DevSecOps learning project** focused on building a secure CI/CD pipeline for a Java application. The objective is to integrate multiple security tools throughout the software development lifecycle (SDLC) and automate security checks using Jenkins.
+This project is a hands-on **DevSecOps learning project** focused on building a secure CI/CD pipeline for a Java application. The objective is to integrate security and quality assurance tools throughout the Software Development Lifecycle (SDLC) and automate their execution using Jenkins.
 
-The repository is organized to separate infrastructure components from the application source code, making it easier to manage and extend as additional tools are introduced.
+The repository is organized to separate infrastructure components from the application source code, making it easier to manage, extend, and maintain as additional DevSecOps tools are introduced.
 
 ---
 
@@ -17,8 +17,11 @@ The repository is organized to separate infrastructure components from the appli
 │   └── .env
 │
 ├── src/
-│   └── (Java application source code)
+│   ├── main/
+│   └── test/
 │
+├── Jenkinsfile
+├── pom.xml
 └── README.md
 ```
 
@@ -33,29 +36,54 @@ Current contents:
 
 ### `src/`
 
-Contains the Java application that will be used as the target application for the CI/CD pipeline.
+Contains the Java Spring Boot application and its unit tests.
+
+### `Jenkinsfile`
+
+Defines the CI pipeline executed by Jenkins, including build, testing, code coverage, mutation testing, and artifact publishing.
 
 ---
 
 # Project Goal
 
-The goal of this project is to build a complete **DevSecOps pipeline** by integrating security tools into every stage of the development lifecycle.
+The goal of this project is to build a complete **DevSecOps pipeline** by integrating security, testing, and code quality tools into every stage of the software development lifecycle.
 
-As the project evolves, additional security tools will be incorporated into the Jenkins pipeline, allowing automated security scanning before code reaches production.
+The pipeline will evolve incrementally, with each tool added as a dedicated stage in Jenkins.
 
-Current plan:
+## Current Progress
 
 - ✅ Jenkins infrastructure
-- ✅ Java application
-- ✅ Git hooks with Talisman
+- ✅ Java Spring Boot application
+- ✅ Git secret scanning with Talisman
+- ✅ Automated build with Maven
+- ✅ Unit testing with JUnit
+- ✅ Code coverage with JaCoCo
+- ✅ Mutation testing with PIT
+
+## Planned Integrations
+
 - Static Application Security Testing (SAST)
 - Dependency vulnerability scanning
-- Secret scanning
-- Container image scanning
-- Infrastructure as Code (IaC) scanning
-- Dynamic Application Security Testing (DAST)
 - Software Composition Analysis (SCA)
+- Infrastructure as Code (IaC) scanning
+- Container image scanning
+- Dynamic Application Security Testing (DAST)
+- Docker image build and publishing
 - Deployment automation
+
+---
+
+# Jenkins Pipeline
+
+The current Jenkins pipeline performs the following stages:
+
+1. Checkout source code
+2. Compile the application
+3. Execute JUnit tests
+4. Generate JaCoCo code coverage reports
+5. Execute PIT mutation testing
+6. Package the application
+7. Archive build artifacts and reports
 
 ---
 
@@ -71,44 +99,35 @@ Talisman is a Git hook that helps prevent developers from accidentally committin
 - Certificates
 - Private keys
 - Credentials
-- Other secrets
+- Cloud secrets
 
-By scanning files before commits or pushes, Talisman reduces the risk of exposing sensitive information in the repository.
+By scanning files before commits and pushes, Talisman helps reduce the risk of exposing sensitive information in source control.
 
----
+## Git Hook Configuration
 
-# Git Hook Configuration
+Talisman has been configured as:
 
-Talisman has been configured as both:
+- ✅ Pre-Commit Hook
+- ✅ Pre-Push Hook
 
-- **Pre-Commit Hook**
-  - Scans changes before a commit is created.
+This ensures secrets are scanned both before creating a commit and before pushing code to a remote repository.
 
-- **Pre-Push Hook**
-  - Performs an additional scan before code is pushed to the remote repository.
+## Installation
 
-Using both hooks provides an extra layer of protection against accidentally leaking secrets.
-
----
-
-# Talisman Installation
-
-The following steps were used to install Talisman.
-
-## 1. Download the installer
+### Download the installer
 
 ```bash
 curl https://thoughtworks.github.io/talisman/install.sh -o ~/install-talisman.sh
 chmod +x ~/install-talisman.sh
 ```
 
-## 2. Install as a Pre-Push hook (default)
+### Install as a Pre-Push hook
 
 ```bash
 ~/install-talisman.sh
 ```
 
-## 3. install as a Pre-Commit hook
+### Install as a Pre-Commit hook
 
 ```bash
 ~/install-talisman.sh pre-commit
@@ -116,18 +135,57 @@ chmod +x ~/install-talisman.sh
 
 ---
 
+# Unit Testing with JUnit
+
+Unit tests are executed automatically during the Jenkins pipeline using Maven.
+
+JUnit verifies the correctness of the application's business logic and REST endpoints before the build proceeds to later stages.
+
+The generated test reports are published by Jenkins, allowing easy inspection of passed and failed tests.
+
+---
+
+# Code Coverage with JaCoCo
+
+JaCoCo measures how much of the application code is exercised by the unit tests.
+
+The pipeline automatically generates HTML coverage reports after successful test execution.
+
+Coverage reports help identify:
+
+- Untested code
+- Dead code
+- Areas requiring additional unit tests
+
+---
+
+# Mutation Testing with PIT
+
+PIT (Pitest) evaluates the quality of the unit tests rather than just measuring code coverage.
+
+Instead of only reporting which lines of code were executed, PIT intentionally introduces small changes (mutations) into the application code and reruns the test suite.
+
+If a test fails, the mutation is considered **killed**, indicating the tests successfully detected the change.
+
+If the tests continue to pass, the mutation **survives**, revealing weaknesses in the test suite.
+
+This provides a much stronger indication of test effectiveness than code coverage alone.
+
+The Jenkins pipeline automatically generates PIT HTML reports after every execution.
+
+---
+
 # Current Status
 
 | Component | Status |
 |-----------|--------|
-| Docker Compose | ✅ |
-| Java Application | ✅ |
+| Docker Compose Infrastructure | ✅ |
 | Jenkins | ✅ |
+| Java Spring Boot Application | ✅ |
+| Maven Build | ✅ |
 | Talisman (Pre-Commit) | ✅ |
 | Talisman (Pre-Push) | ✅ |
+| JUnit Tests | ✅ |
+| JaCoCo Code Coverage | ✅ |
+| PIT Mutation Testing | ✅ |
 
----
-
-# Next Steps
-
-The pipeline will continue to evolve by integrating additional DevSecOps and security tools into Jenkins, creating a comprehensive automated CI/CD workflow that enforces security throughout the software development lifecycle.
