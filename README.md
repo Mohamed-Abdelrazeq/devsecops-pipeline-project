@@ -6,6 +6,22 @@ This project is a hands-on **DevSecOps learning project** focused on building a 
 
 The repository is organized to separate infrastructure components from the application source code, making it easier to manage, extend, and maintain as additional DevSecOps tools are introduced.
 
+## Current Progress
+
+- ✅ Jenkins CI Pipeline
+- ✅ Docker Compose Infrastructure
+- ✅ Java Spring Boot Application
+- ✅ Git Secret Scanning (Talisman)
+- ✅ Maven Build Automation
+- ✅ JUnit Unit Testing
+- ✅ JaCoCo Code Coverage
+- ✅ PIT Mutation Testing
+- ✅ SonarQube Static Code Analysis (SAST)
+- ✅ SonarQube Quality Gate
+- ✅ OWASP Dependency-Check (Software Composition Analysis)
+- ✅ Secure Dependency Management
+- ✅ Automated Artifact Archiving
+
 ---
 
 ## Repository Structure
@@ -44,49 +60,21 @@ Defines the CI pipeline executed by Jenkins, including build, testing, code cove
 
 ---
 
-# Project Goal
-
-The goal of this project is to build a complete **DevSecOps pipeline** by integrating security, testing, and code quality tools into every stage of the software development lifecycle.
-
-The pipeline will evolve incrementally, with each tool added as a dedicated stage in Jenkins.
-
-## Current Progress
-
-- ✅ Jenkins infrastructure
-- ✅ Java Spring Boot application
-- ✅ Git secret scanning with Talisman
-- ✅ Automated build with Maven
-- ✅ Unit testing with JUnit
-- ✅ Code coverage with JaCoCo
-- ✅ Mutation testing with PIT
-- ✅ Static Code Analysis with SonarQube
-- ✅ SonarQube Quality Gate
-
-## Planned Integrations
-
-- Dependency vulnerability scanning
-- Software Composition Analysis (SCA)
-- Infrastructure as Code (IaC) scanning
-- Container image scanning
-- Dynamic Application Security Testing (DAST)
-- Docker image build and publishing
-- Deployment automation
-
----
-
 # Jenkins Pipeline
 
-The current Jenkins pipeline performs the following stages:
+The Jenkins pipeline currently performs the following stages:
 
-1. Checkout source code
-2. Compile the application
-3. Execute JUnit tests
-4. Generate JaCoCo code coverage reports
-5. Execute PIT mutation testing
-6. Perform SonarQube static analysis
-7. Wait for SonarQube Quality Gate
-8. Package the application
-9. Archive build artifacts and reports
+1. Checkout Source Code
+2. Secret Scanning (Talisman)
+3. Compile Application
+4. Execute JUnit Tests
+5. Generate JaCoCo Coverage Report
+6. Execute PIT Mutation Testing
+7. Perform SonarQube Static Analysis
+8. Wait for SonarQube Quality Gate
+9. Execute OWASP Dependency-Check (SCA)
+10. Package Application
+11. Archive Reports and Artifacts
 
 ---
 
@@ -286,6 +274,32 @@ If the Quality Gate fails, the pipeline is aborted automatically.
 
 ---
 
+# Software Composition Analysis (OWASP Dependency-Check)
+
+OWASP Dependency-Check performs Software Composition Analysis (SCA) by inspecting the project's third-party dependencies and comparing them against publicly disclosed vulnerabilities from the National Vulnerability Database (NVD).
+
+During each pipeline execution it automatically scans every Maven dependency and generates detailed vulnerability reports.
+
+The scan detects:
+
+- Known CVEs
+- Vulnerable third-party libraries
+- Transitive dependency vulnerabilities
+- Dependency risk scores (CVSS)
+
+The pipeline is configured to fail automatically whenever a dependency contains a vulnerability with a CVSS score greater than or equal to the configured threshold.
+
+This prevents vulnerable libraries from reaching production.
+
+Generated reports include:
+
+- HTML Report
+- XML Report
+- JSON Report
+- SARIF Report
+
+---
+
 # Current Status
 
 | Component | Status |
@@ -301,7 +315,9 @@ If the Quality Gate fails, the pipeline is aborted automatically.
 | JaCoCo Code Coverage | ✅ |
 | PIT Mutation Testing | ✅ |
 | SonarQube Analysis | ✅ |
-| Quality Gate | ✅ |
+| SonarQube Quality Gate | ✅ |
+| OWASP Dependency-Check | ✅ |
+| Secure Dependency Management | ✅ |
 
 ---
 
@@ -399,19 +415,61 @@ This is an important concept when integrating multiple DevSecOps tools inside th
 
 ---
 
+## Java Version Mismatch in Jenkins
+
+### Issue
+
+The Jenkins pipeline failed during compilation with:
+
+error: release version XX not supported
+
+### Cause
+
+The Maven compiler target did not match the JDK installed on the Jenkins agent.
+
+### Solution
+
+The project's Java version was aligned with the runtime available in Jenkins, resolving the compilation failure.
+
+---
+
+## Dependency Vulnerabilities
+
+### Issue
+
+OWASP Dependency-Check detected multiple vulnerable libraries, causing the pipeline to fail.
+
+### Cause
+
+Several framework dependencies contained publicly disclosed CVEs above the configured CVSS threshold.
+
+### Solution
+
+Dependencies were upgraded to secure versions, including Spring Boot, Spring Framework, Spring Security, Tomcat, Jackson, and other supporting libraries until the scan completed successfully.
+
+---
+
+## SonarQube Quality Gate Failed
+
+### Issue
+
+The Quality Gate failed due to insufficient code coverage on new code.
+
+### Cause
+
+Several application paths were not exercised by the unit tests.
+
+### Solution
+
+Additional tests were implemented to cover the remaining execution paths until the coverage threshold was satisfied.
+
+---
+
 # Future Work
 
-The pipeline will continue evolving by integrating additional security tools, including:
+The remaining milestones for this project are:
 
-- OWASP Dependency-Check
-- Trivy
-- Gitleaks
-- Checkov
-- Semgrep
-- OWASP ZAP
-- Docker Image Publishing
-- Kubernetes Deployment
-- GitOps
-- Continuous Monitoring
+- Trivy Vulnerability Scanner
+- Open Policy Agent (OPA)
+- DAST
 
-Each integration will be documented along with any implementation challenges and lessons learned.
