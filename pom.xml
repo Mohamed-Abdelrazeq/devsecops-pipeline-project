@@ -82,15 +82,23 @@
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
 				<version>1.17.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.2</version>
+					</dependency>
+				</dependencies>
 
 				<configuration>
 					<mutationThreshold>70</mutationThreshold>
+
 					<targetClasses>
-						<param>com.devsecops.*</param>
+						<param>com.devsecops.**</param>
 					</targetClasses>
 
 					<targetTests>
-						<param>com.devsecops.*</param>
+						<param>com.devsecops.**</param>
 					</targetTests>
 
 					<outputFormats>
