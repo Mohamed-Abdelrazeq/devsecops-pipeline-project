@@ -15,7 +15,11 @@ public class NumericController {
 
 	private static final String BASE_URL = "http://node-service:5000/plusone";
 
-	private final RestTemplate restTemplate = new RestTemplate();
+	private final RestTemplate restTemplate;
+
+	public NumericController(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 
 	@GetMapping("/")
 	public String welcome() {
